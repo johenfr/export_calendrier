@@ -162,3 +162,7 @@ cython_debug/
 *.pyproj
 
 *.sln
+
+e_d_t.xlsx
+
+e_d_t.dat
