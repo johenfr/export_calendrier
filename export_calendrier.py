@@ -9,8 +9,6 @@
 import locale
 import os
 import datetime
-import sys
-import tempfile
 import logging
 import time
 import pickle
@@ -28,7 +26,15 @@ from openpyxl.worksheet.properties import PageSetupProperties
 from openpyxl.worksheet.worksheet import Worksheet
 
 
-class Dict2Class(object):
+class Dict2ClassEmpty(object):
+    def login(self):
+        return ''
+    
+    def password(self):
+        return ''
+    
+    
+class Dict2Class(Dict2ClassEmpty):
 
     def __init__(self, my_dict):
         for key in my_dict:
@@ -44,20 +50,24 @@ def get_credential(url):
     # get single credential
     connection = keepassxc_proxy_client.protocol.Connection()
     connection.connect()
-    if not os.path.exists(os.path.join(os.getenv('HOME'), '.ssh', 'python_keepassxc')):
+    _home = os.environ.get('HOME', '')
+    if not os.path.exists(os.path.join(_home, '.ssh', 'python_keepassxc')):
         connection.associate()
         name, public_key = connection.dump_associate()
         print("Got connection named '", name, "' with key", public_key)
-        with open(os.path.join(os.getenv('HOME'), '.ssh', 'python_keepassxc'), 'wb') as fic:
+        with open(os.path.join(_home, '.ssh', 'python_keepassxc'), 'wb') as fic:
             fic.write(public_key)
-    with open(os.path.join(os.getenv('HOME'), '.ssh', 'python_keepassxc'), 'rb') as fic:
+    with open(os.path.join(_home, '.ssh', 'python_keepassxc'), 'rb') as fic:
         public_key = fic.read()
     connection.load_associate('python', public_key)
     connection.test_associate()
     credentials = connection.get_logins(url)
-    credential = Dict2Class(credentials[0])
-    logging.debug(credential.login)
-    return credential
+    if credentials:
+        credential = Dict2Class(credentials[0])
+        logging.debug(credential.login)
+        return credential
+    else:
+        return Dict2ClassEmpty()
 
 
 if __name__ == '__main__':
@@ -75,10 +85,6 @@ if __name__ == '__main__':
     for ind_i, _ in enumerate(jours):
         n_date = start_date + datetime.timedelta(days=ind_i)
         dates[ind_i] += n_date.strftime(' %d/%m')
-    # for ind_i in range(5):
-    #     dates.append([])
-    #     for ind_j in range(len(jours)):
-    #         dates[ind_i+1].append('')
     logging.debug(dates)
     if os.path.exists('e_d_t.dat'):
         # vérification de la date d'export
@@ -133,16 +139,17 @@ if __name__ == '__main__':
 
     wb = Workbook()
     ws = wb.active
-    for ligne in e_d_t:
-        ws.append(ligne)
-    ws.sheet_properties.pageSetUpPr = PageSetupProperties(fitToPage=True, autoPageBreaks=False)
-    dims = {}
-    for row in ws.rows:
-        for cell in row:
-            if cell.value:
-                dims[cell.column] = max([len(ligne) for ligne in str(cell.value).splitlines()]) + 5
-    for col, value in dims.items():
-        ws.column_dimensions[chr(64 + col)].width = value
-    Worksheet.set_printer_settings(ws, paper_size=9, orientation='landscape')
-    wb.save("e_d_t.xlsx")
-    subprocess.run(['open', "e_d_t.xlsx"], check=False)
+    if ws is not None:
+        for ligne in e_d_t:
+            ws.append(ligne)
+        ws.sheet_properties.pageSetUpPr = PageSetupProperties(fitToPage=True, autoPageBreaks=False)
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max([len(ligne) for ligne in str(cell.value).splitlines()]) + 5
+        for col, value in dims.items():
+            ws.column_dimensions[chr(64 + col)].width = value
+        Worksheet.set_printer_settings(ws, paper_size=9, orientation='landscape')
+        wb.save("e_d_t.xlsx")
+        subprocess.run(['open', "e_d_t.xlsx"], check=False)
