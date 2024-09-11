@@ -24,6 +24,8 @@ from selenium.webdriver.firefox.options import Options
 from openpyxl import Workbook
 from openpyxl.worksheet.properties import PageSetupProperties
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles import PatternFill
+from openpyxl.styles import Font
 
 
 class Dict2ClassEmpty(object):
@@ -118,7 +120,7 @@ if __name__ == '__main__':
         driver.get(URL+DATA_ROUTE)
         time.sleep(1)
 
-        e_d_t = [['Horaire', 'Cours / TD', 'Salle', 'Prof.']]
+        e_d_t = [['Horaire', 'Cours / TD', 'Salle', 'Prof.', '          ']]
         for ind_i, col in enumerate(driver.find_elements(By.CSS_SELECTOR, ".fc-content-col")):
             e_d_t.append([dates[ind_i], '', '', ''])
             for ind_j, output in enumerate(col.find_elements(By.XPATH, value="(.//*[contains(@class, 'fc-content')])")):
@@ -132,22 +134,33 @@ if __name__ == '__main__':
                         prof_i = suite_i.split('p\n')[1]
                     except IndexError:
                         prof_i = ''
-                    e_d_t.append(['- %s' % heure_i, contenu_i, salle_i, prof_i])
+                    e_d_t.append(['- %s' % heure_i, contenu_i, salle_i, prof_i, ''])
         driver.close()
         with open('e_d_t.dat', 'wb') as driver_dat:
             pickle.dump(e_d_t, driver_dat)
 
     wb = Workbook()
     ws = wb.active
+    blueFill = PatternFill(start_color='FFAAAAFF',
+                   end_color='FFAAAAFF',
+                   fill_type='solid')
     if ws is not None:
         for ligne in e_d_t:
-            ws.append(ligne)
+            ws.append(ligne)                
+        for row in ws.rows:
+            for cell in row:
+                cell.font = Font(bold=True)
+            break
+                
         ws.sheet_properties.pageSetUpPr = PageSetupProperties(fitToPage=True, autoPageBreaks=False)
         dims = {}
         for row in ws.rows:
             for cell in row:
                 if cell.value:
                     dims[cell.column] = max([len(ligne) for ligne in str(cell.value).splitlines()]) + 5
+                if not row[2].value:
+                    cell.fill = blueFill
+                    cell.font = Font(bold=True)
         for col, value in dims.items():
             ws.column_dimensions[chr(64 + col)].width = value
         Worksheet.set_printer_settings(ws, paper_size=9, orientation='landscape')
