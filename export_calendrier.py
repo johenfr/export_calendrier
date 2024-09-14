@@ -126,7 +126,11 @@ if __name__ == '__main__':
             for ind_j, output in enumerate(col.find_elements(By.XPATH, value="(.//*[contains(@class, 'fc-content')])")):
                 if output.text:
                     heure_i, sans_lignes = output.text.split('\n', 1)
-                    contenu_i, suite_i = sans_lignes.split('\nCH', 1)
+                    try:
+                        contenu_i, suite_i = sans_lignes.split('\nCH', 1)
+                    except ValueError:
+                        print(sans_lignes)
+                        contenu_i, suite_i = sans_lignes.split('\n', 1)
                     salle_i = 'CH' + suite_i.split('p\n')[0] + 'p'
                     salle_i = '\n'.join(salle_i.split(' ', 1))
                     salle_i = '\n'.join(salle_i.rsplit(' ', 1))
