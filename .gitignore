@@ -163,6 +163,6 @@ cython_debug/
 
 *.sln
 
-e_d_t.xlsx
+e_d_t*.xlsx
 
-e_d_t.dat
+e_d_t*.dat
