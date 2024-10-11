@@ -33,10 +33,12 @@ etudiant="Gabriel"
 
 
 class Dict2ClassEmpty(object):
-    def login(self):
+    @staticmethod
+    def login():
         return ""
 
-    def password(self):
+    @staticmethod
+    def password():
         return ""
 
 
