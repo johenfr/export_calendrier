@@ -167,3 +167,6 @@ cython_debug/
 e_d_t*.xlsx
 
 e_d_t*.dat
+/nbproject/
+export_calendrier.code-workspace
+pyproject.toml

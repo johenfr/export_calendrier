@@ -136,7 +136,7 @@ if __name__ == "__main__":
         e_d_t = [["Horaire", "Cours / TD", "Salle", "Prof.", "          "]]
         for ind_i, col in enumerate(driver.find_elements(By.CSS_SELECTOR, ".fc-content-col")):
             e_d_t.append([dates[ind_i], "", "", ""])
-            for ind_j, output in enumerate(col.find_elements(By.XPATH, value="(.//*[contains(@class, 'fc-content')])")):
+            for output in col.find_elements(By.XPATH, value="(.//*[contains(@class, 'fc-content')])"):
                 if output.text:
                     heure_i, sans_lignes = output.text.split("\n", 1)
                     prof_i = ""
