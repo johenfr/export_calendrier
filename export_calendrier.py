@@ -35,9 +35,6 @@ from openpyxl.styles import Font
 # Importer Tkinter pour les dialogues d'interaction utilisateur
 import tkinter.messagebox as msg
 
-# Importer les types pour les annotations
-from typing import cast, SupportsBytes
-
 # Nom d'étudiant par défaut
 etudiant="Gabriel"
 
@@ -74,10 +71,10 @@ def get_credential(url):
         connection.associate()
         name, public_key = connection.dump_associate()
         print("Got connection named '", name, "' with key", public_key)
-        with cast(SupportsBytes, open(os.path.join(_home, ".ssh", "python_keepassxc"), "wb")) as fic:
+        with open(os.path.join(_home, ".ssh", "python_keepassxc"), "wb") as fic:
             fic.write(public_key)
     # Charger l'association existante
-    with cast(SupportsBytes, open(os.path.join(_home, ".ssh", "python_keepassxc"), "rb")) as fic:
+    with open(os.path.join(_home, ".ssh", "python_keepassxc"), "rb") as fic:
         public_key = fic.read()
     connection.load_associate("python", public_key)
     connection.test_associate()
@@ -135,7 +132,7 @@ if __name__ == "__main__":
     e_d_t = None
     if os.path.exists("e_d_t_%s.dat" % etudiant.lower()):
         # export encore valide
-        with cast(SupportsBytes, open("e_d_t_%s.dat" % etudiant.lower(), "rb")) as driver_dat:
+        with open("e_d_t_%s.dat" % etudiant.lower(), "rb") as driver_dat:
             e_d_t = pickle.load(driver_dat)
     else:
         # Aucune donnée mise en cache disponible, récupérer depuis cyu.fr
@@ -218,7 +215,9 @@ if __name__ == "__main__":
                     # Ajouter les données analysées à l'emploi du temps
                     e_d_t.append(["- %s" % heure_i, contenu_i, salle_i, prof_i, ""])
         # Mettre en cache les données analysées
-        with cast(SupportsBytes, open("e_d_t_%s.dat" % etudiant.lower(), "wb")) as driver_dat:
+        with open("e_d_t_%s.dat" % etudiant.lower(), "wb") as driver_dat:
+            # Suppression du faux positif de PyTypeChecker dans PyCharm
+            # noinspection PyTypeChecker
             pickle.dump(e_d_t, driver_dat)
 
     # Créer un classeur et une feuille Excel
