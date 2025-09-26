@@ -76,7 +76,7 @@ def get_credential(url):
     # Charger l'association existante
     with open(os.path.join(_home, ".ssh", "python_keepassxc"), "rb") as fic:
         public_key = fic.read()
-    connection.load_associate("python", public_key)
+    connection.load_associate("python_keepassxc", public_key)
     connection.test_associate()
     # Récupérer les identifiants pour l'URL
     credentials = connection.get_logins(url)
