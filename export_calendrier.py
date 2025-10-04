@@ -7,7 +7,8 @@
 @Desc    :   recuperation du calendrier sur cyu.fr
 """
 
-# Importer les modules nécessaires pour la locale, les opérations sur fichiers, la gestion des dates, la journalisation, les délais temporels, la sérialisation des données et l'exécution de sous-processus
+# Importer les modules nécessaires pour la locale, les opérations sur fichiers, la gestion des dates,
+# la journalisation, les délais temporels, la sérialisation des données et l'exécution de sous-processus
 import locale
 import os
 import datetime
