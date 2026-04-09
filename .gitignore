@@ -174,3 +174,5 @@ e_d_t*.dat
 /nbproject/
 export_calendrier.code-workspace
 pyproject.toml
+/.pydevproject
+/.project

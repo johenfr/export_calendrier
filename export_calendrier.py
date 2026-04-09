@@ -157,7 +157,7 @@ if __name__ == "__main__":
         driver.find_element(By.CSS_SELECTOR, ".loginBtn").click()
         # Naviguer vers la page des données du calendrier
         driver.get(URL + DATA_ROUTE)
-        time.sleep(1)
+        time.sleep(5)
 
         # Initialiser la structure de données pour l'emploi du temps
         if e_d_t is None:
