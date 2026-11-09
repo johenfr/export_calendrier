@@ -94,7 +94,10 @@ def get_credential(url):
 # Bloc d'exécution principal
 if __name__ == "__main__":
     # Demander à l'utilisateur de sélectionner l'étudiant
-    for choix in ["Gabriel", "Louis-Joseph"]:
+    for choix in ["Thomas", "Gabriel", "Louis-Joseph"]:
+        msg.CANCEL = 'cancel'
+        msg.YES = 'yes'
+        msg.NO = 'no'
         if msg.askyesno("Étudiant?", choix):
             etudiant = choix
             break
@@ -142,7 +145,7 @@ if __name__ == "__main__":
         
         # Initialiser le pilote Firefox
         driver = webdriver.Firefox()
-        URL = "https://services-web.cyu.fr/calendar/"
+        URL = "https://celcat-calendar.cyu.fr/"
         LOGIN_ROUTE = "LdapLogin/"
         DATA_ROUTE = "cal?vt=agendaWeek&dt=%s&et=student&fid0=%s" % (start_date.isoformat(), my_creds2.password)
 
